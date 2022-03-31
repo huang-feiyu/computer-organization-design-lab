@@ -1,3 +1,9 @@
+# gdb
+**/.gdb_history
+
+# VSC
+.vscode/
+
 # Prerequisites
 *.d
 
