@@ -72,7 +72,7 @@ int main( int argc, char **argv ) {
     int nmax = 1000,i;
 
     void (*orderings[])(int,float *,float *,float *) =
-        {&multMat1,&multMat2,&multMat3,&multMat4,&multMat5,&multMat6};
+    {&multMat1,&multMat2,&multMat3,&multMat4,&multMat5,&multMat6};
     char *names[] = {"ijk","ikj","jik","jki","kij","kji"};
 
     float *A = (float *)malloc( nmax*nmax * sizeof(float));
@@ -94,7 +94,7 @@ int main( int argc, char **argv ) {
 
         /* convert time to Gflop/s */
         double seconds = (end.tv_sec - start.tv_sec) +
-            1.0e-6 * (end.tv_usec - start.tv_usec);
+                         1.0e-6 * (end.tv_usec - start.tv_usec);
         double Gflops = 2e-9*nmax*nmax*nmax/seconds;
         printf( "%s:\tn = %d, %.3f Gflop/s\n", names[i], nmax, Gflops );
     }

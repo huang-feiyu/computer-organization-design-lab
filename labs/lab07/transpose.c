@@ -19,7 +19,7 @@ void transpose_blocking(int n, int blocksize, int *dst, int *src) {
 }
 
 void benchmark(int *A, int *B, int n, int blocksize,
-    void (*transpose)(int, int, int*, int*), char *description) {
+               void (*transpose)(int, int, int*, int*), char *description) {
 
     int i, j;
     printf("Testing %s: ", description);
@@ -37,7 +37,7 @@ void benchmark(int *A, int *B, int n, int blocksize,
     gettimeofday( &end, NULL );
 
     double seconds = (end.tv_sec - start.tv_sec) +
-        1.0e-6 * (end.tv_usec - start.tv_usec);
+                     1.0e-6 * (end.tv_usec - start.tv_usec);
     printf( "%g milliseconds\n", seconds*1e3 );
 
 

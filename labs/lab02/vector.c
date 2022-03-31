@@ -60,7 +60,7 @@ vector_t *vector_new() {
     /* First, we need to allocate memory on the heap for the struct */
     retval = /* YOUR CODE HERE */
 
-    /* Check our return value to make sure we got memory */
+        /* Check our return value to make sure we got memory */
     if (/* YOUR CODE HERE */) {
         allocation_failed();
     }

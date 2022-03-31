@@ -40,7 +40,7 @@ int start_with(char*, char*);
 
 void http_make_header(int,  char *, int, __off_t);
 
-void http_make_error(int , int );
+void http_make_error(int, int );
 
 void signal_callback_handler(int );
 

@@ -16,15 +16,13 @@ int main(void) {
     printf("Berkeley eccentrics:\n====================\n");
 
     /* for loop */
-    for (a = 0; a < V0; a++)
-    {
+    for (a = 0; a < V0; a++) {
         printf("Happy ");
     }
     printf("\n");
 
     /* switch statement */
-    switch (V1)
-    {
+    switch (V1) {
     case 0:
         printf("Yoshua\n");
     case 1:

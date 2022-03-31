@@ -2,8 +2,8 @@
 #include "bit_ops.h"
 
 void test_get_bit(unsigned x,
-        unsigned n,
-        unsigned expected) {
+                  unsigned n,
+                  unsigned expected) {
     unsigned a = get_bit(x, n);
     if(a!=expected) {
         printf("get_bit(0x%08x,%u): 0x%08x, expected 0x%08x\n",x,n,a,expected);
@@ -12,9 +12,9 @@ void test_get_bit(unsigned x,
     }
 }
 void test_set_bit(unsigned x,
-        unsigned n,
-        unsigned v,
-        unsigned expected) {
+                  unsigned n,
+                  unsigned v,
+                  unsigned expected) {
     unsigned o = x;
     set_bit(&x, n, v);
     if(x!=expected) {
@@ -24,8 +24,8 @@ void test_set_bit(unsigned x,
     }
 }
 void test_flip_bit(unsigned x,
-        unsigned n,
-        unsigned expected) {
+                   unsigned n,
+                   unsigned expected) {
     unsigned o = x;
     flip_bit(&x, n);
     if(x!=expected) {
@@ -35,7 +35,7 @@ void test_flip_bit(unsigned x,
     }
 }
 int main(int argc,
-        const char * argv[]) {
+         const char * argv[]) {
     printf("\nTesting get_bit()\n\n");
     test_get_bit(0b1001110,0,0);
     test_get_bit(0b1001110,1,1);
