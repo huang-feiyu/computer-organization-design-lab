@@ -10,6 +10,8 @@
 
 实现：
 
-* lab
-    * [lab00](./labs/lab00): for fresh man
-    * [lab01](./labs/lab01): gdb and pointer in c
+* [labs](https://inst.eecs.berkeley.edu/~cs61c/su20/#labs)
+    * [lab00](./labs/lab00): Intro and Set Up
+    * [lab01](./labs/lab01): Number Rep, C and CGDB
+* [projects](https://inst.eecs.berkeley.edu/~cs61c/fa20/#projects)
+    * [proj1](./projects/proj1): The Game of Life
