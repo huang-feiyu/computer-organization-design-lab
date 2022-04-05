@@ -28,19 +28,19 @@ int main() {
     last_node = (*head_ptr)->next;
 
     int is_correct = list_size(head_ptr) == 2 && last_node != NULL && last_node->val == 2 &&
-                     last_node->next == NULL;
+                    last_node->next == NULL;
     printf("Appending a node to a list of size 1. Size of list is %u and it should be 2, the new node's val and next "
-           "attributes are %i and %p and they should be 2 and NULL, respectively\n", list_size(head_ptr),
-           last_node->val, last_node->next);
+            "attributes are %i and %p and they should be 2 and NULL, respectively\n", list_size(head_ptr),
+            last_node->val, last_node->next);
 
     append_node	(head_ptr, 3);
     last_node = (last_node)->next;
 
     is_correct = list_size(head_ptr) == 3 && last_node != NULL && last_node->val == 3 &&
-                 last_node->next == NULL;
+                last_node->next == NULL;
     printf("Appending a node to a list of size 2. Size of list is %u and it should be 3, the new node's val and next "
-           "attributes are %i and %p and they should be 3 and NULL, respectively\n", list_size(head_ptr),
-           last_node->val, last_node->next);
+            "attributes are %i and %p and they should be 3 and NULL, respectively\n", list_size(head_ptr),
+            last_node->val, last_node->next);
 
     int i;
     for (i = 4; i <= 10; i++) {
@@ -68,7 +68,7 @@ int main() {
     }
 
     printf("\nSize of list is %u and it should be 10, the new head's val "
-           "attribute is %i and it should be 10\n", list_size(head_ptr), head->val);
+            "attribute is %i and it should be 10\n", list_size(head_ptr), head->val);
 
     printf("\nNow let's perform some operations on a new list that's originally empty...\n");
 
@@ -82,19 +82,19 @@ int main() {
     append_node(smallList, 80);
     is_correct = is_correct && list_size(smallList) == 1 && (*smallList)->val == 80 && (*smallList)->next == NULL;
     printf("Appending a node with val 80 to the empty list. Size of list is %u and it should be 1, the head's "
-           "val and next attributes are %i and %p and they should be 80 and NULL\n", list_size(smallList),
-           (*smallList)->val, (*smallList)->next);
+            "val and next attributes are %i and %p and they should be 80 and NULL\n", list_size(smallList),
+            (*smallList)->val, (*smallList)->next);
 
     reverse_list(smallList);
     is_correct = is_correct && list_size(smallList) == 1 && (*smallList)->val == 80 && (*smallList)->next == NULL;
     printf("Reversing the list. Size of list is %u and it should be 1, the head's "
-           "val and next attributes are %i and %p and they should be 80 and NULL\n", list_size(smallList),
-           (*smallList)->val, (*smallList)->next);
+            "val and next attributes are %i and %p and they should be 80 and NULL\n", list_size(smallList),
+            (*smallList)->val, (*smallList)->next);
 
     if (is_correct) {
-        printf("\n\n--------------TEST PASSED----------------");
+        printf("\n\n--------------TEST PASSED----------------\n");
     } else {
-        printf("\n\n--------------TEST FAILED----------------");
+        printf("\n\n--------------TEST FAILED----------------\n");
     }
 
     return !is_correct;

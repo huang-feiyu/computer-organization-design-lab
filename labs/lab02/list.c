@@ -1,35 +1,55 @@
 #include "list.h"
+#include "../debug.h"
 
-/* Add a node to the end of the linked list. Assume head_ptr is non-null. */
-void append_node (node** head_ptr, int new_data) {
-    /* First lets allocate memory for the new node and initialize its attributes */
-    /* YOUR CODE HERE */
+/* Add a node to the end of the linked list. */
+void append_node (node* *head_ptr, int new_data) {
+    assert(head_ptr != NULL);
 
-    /* If the list is empty, set the new node to be the head and return */
+    // init node
+    node *new_node = (node*) malloc(sizeof(node));
+    new_node->next = NULL;
+    new_node->val = new_data;
+
+    // corner case: empty list
     if (*head_ptr == NULL) {
-        /* YOUR CODE HERE */
+        *head_ptr = new_node;
         return;
     }
+    // to get the last node
     node* curr = *head_ptr;
-    while (/* YOUR CODE HERE */ != NULL) {
+    while (curr->next != NULL) {
         curr = curr->next;
     }
-    /* Insert node at the end of the list */
-    /* YOUR CODE HERE */
+
+    // insert new code
+    curr->next = new_node;
 }
 
-/* Reverse a linked list in place (in other words, without creating a new list).
-   Assume that head_ptr is non-null. */
+/* Reverse a linked list in place. */
 void reverse_list (node** head_ptr) {
+    assert(head_ptr != NULL);
+
+    /*
     node* prev = NULL;
     node* curr = *head_ptr;
     node* next = NULL;
     while (curr != NULL) {
-        /* INSERT CODE HERE */
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
     }
-    /* Set the new head to be what originally was the last node in the list */
-    *head_ptr = /* INSERT CODE HERE */
+    // Set the new head to be what originally was the last node in the list
+    *head_ptr = prev;
+    */
+    *head_ptr = reverse_list_recursive((*head_ptr));
 }
 
-
-
+node* reverse_list_recursive(node *head) {
+    if (head == NULL || head->next == NULL)
+        return head;
+    node* ret = reverse_list_recursive(head->next);
+    head->next->next = head;
+    head->next = NULL;
+    return ret;
+}

@@ -7,3 +7,4 @@ typedef struct node {
 
 void append_node(node** head_ptr, int new_data);
 void reverse_list(node** head_ptr);
+node* reverse_list_recursive(node* head);
