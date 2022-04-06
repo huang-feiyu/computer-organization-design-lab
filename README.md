@@ -13,5 +13,7 @@
 * [labs](https://inst.eecs.berkeley.edu/~cs61c/su20/#labs)
     * [lab00](./labs/lab00): Intro and Set Up
     * [lab01](./labs/lab01): Number Rep, C and CGDB
+    * [lab02](./labs/lab02): Advanced C
+    * [lab03](./labs/lab03): RISC-V Assembly
 * [projects](https://inst.eecs.berkeley.edu/~cs61c/fa20/#projects)
     * [proj1](./projects/proj1): The Game of Life

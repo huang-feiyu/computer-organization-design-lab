@@ -3,21 +3,26 @@
 n: .word 9
 
 .text
-main:   
+main:
     add t0, x0, x0
     addi t1, x0, 1
     la t3, n
     lw t3, 0(t3)
-fib:    
+fib:
     beq t3, x0, finish
     add t2, t1, t0
     mv t0, t1
     mv t1, t2
-    addi t3, t3, -1  
+    addi t3, t3, -1
     j fib
-finish: 
+finish:
     addi a0, x0, 1
     addi a1, t0, 0
     ecall # print integer ecall
     addi a0, x0, 10
     ecall # terminate ecall
+
+# 1. `.data`: declare the following is data; `.word`: creating some space in memory to hold data; `.text`: declare the following is code
+# 2. 0; it means that the program runs without exception
+# 3. 0x10000010
+# 4. 144 (change the t3 value to 11)
