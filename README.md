@@ -15,5 +15,6 @@
     * [lab01](./labs/lab01): Number Rep, C and CGDB
     * [lab02](./labs/lab02): Advanced C
     * [lab03](./labs/lab03): RISC-V Assembly
+    * [lab04](./labs/lab04): RISC-V Functions, Pointers
 * [projects](https://inst.eecs.berkeley.edu/~cs61c/fa20/#projects)
     * [proj1](./projects/proj1): The Game of Life

@@ -45,11 +45,18 @@ main:
     li a0, 10
     ecall
 
+#void map(struct node *head, int (*f)(int)) {
+#    \if (!head) return;
+#    for (int i = 0; i < head->size; i++)
+#      head->arr[i] = f(head->arr[i]);
+#    map(head->next, f);}
+#struct node {int* arr; int size; struct node* next;};
+
 map:
     addi sp, sp, -12
-    sw ra, 0(sp)
-    sw s1, 4(sp)
-    sw s0, 8(sp)
+    sw ra, 0(sp) # save return address
+    sw s1, 4(sp) # function pointer
+    sw s0, 8(sp) # node pointer
 
     beq a0, x0, done    # if we were given a null pointer, we're done.
 
@@ -61,21 +68,39 @@ map:
     # - 4 for the array pointer
     # - 4 for the size of the array
     # - 4 more for the pointer to the next node
-mapLoop:
-    add t1, s0, x0      # load the address of the array of current node into t1
-    lw t2, 4(s0)        # load the size of the node's array into t2
 
-    add t1, t1, t0      # offset the array address by the count
+    # NOTE: the first
+    # add t1, s0, x0
+    # lw t2, 4(s0)
+    lw t1, 0(s0)       # load the address of the array of current node into t1
+    lw t2, 4(s0)       # load the size of the node's array into t2
+    addi t1, t1, -4    # t1 = array pointer - 4, so we can increment it by 4
+
+mapLoop:
+    # NOTE: the second, every time plus one => 4 bytes for an integer
+    addi t1, t1, 4      # offset the array address by the count
     lw a0, 0(t1)        # load the value at that address into a0
 
+    # NOTE: the third, function call changes the value of t1
+    # jalr s1
+    addi sp, sp, -4
+    sw t1, 0(sp)
     jalr s1             # call the function on that value.
+    lw t1, 0(sp)
+    addi sp, sp, 4
 
     sw a0, 0(t1)        # store the returned value back into the array
     addi t0, t0, 1      # increment the count
     bne t0, t2, mapLoop # repeat if we haven't reached the array size yet
 
-    la a0, 8(s0)        # load the address of the next node into a0
-    lw a1, 0(s1)        # put the address of the function back into a1 to prepare for the recursion
+    # NOTE: the forth, the difference between la and lw:
+    #    - la, load an address, puts the address to rd;
+    #    - lw, load a word from memory, reads the address to rd;
+    # la a0, 8(s0)
+    lw a0, 8(s0)        # load the address of the next node into a0
+    # NOTE: the fifth
+    # lw a1, 0(s1)      # put the address of the function back into a1 to prepare for the recursion
+    mv a1, s1 # copy the value to a1; addi a1, s1, 0
 
     jal  map            # recurse
 done:
@@ -151,7 +176,8 @@ printLoop:
     li a0, 11  # prepare for print string ecall
     ecall
     addi t1, t1, 1
-  li t6 5
+
+    li t6 5
     bne t1, t6, printLoop # ... while i!= 5
     li a1, '\n'
     li a0, 11
