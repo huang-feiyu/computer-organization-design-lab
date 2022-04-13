@@ -74,7 +74,7 @@ print_str:
 # args:
 #   a1 = address of the string you want to turn into an integer.
 # return:
-#   a0 = Integer representation of string 
+#   a0 = Integer representation of string
 #================================================================
 atoi:
     li a0 c_atoi
@@ -350,8 +350,8 @@ inner_loop_start:
     beq s4 s2 inner_loop_end
 
     # t0 = row index * len(row) + column index
-    mul t0 s2 s3 
-    add t0 t0 s4 
+    mul t0 s2 s3
+    add t0 t0 s4
     slli t0 t0 2
 
     # Load matrix element
@@ -365,7 +365,7 @@ inner_loop_start:
     # Print whitespace
     li a1 ' '
     jal print_char
-    
+
 
     addi s4 s4 1
     j inner_loop_start

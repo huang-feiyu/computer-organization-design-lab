@@ -147,3 +147,130 @@ inner_loop_start:
 ---
 
 ![task32](./outputs/img/task32.png)
+
+## Part B: File Operations and Main
+
+### Task 1
+
+```c
+int* read_matrix(char* filename, int* row, int* col) {
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL)
+        exit(90);
+
+    int temp = fread(fp, row, sizeof(int));
+    if (temp != 4)
+        exit(91);
+    temp = fread(fp, col, sizeof(int));
+    if (temp != 4)
+        exit(91);
+
+    int size = (*row) * (*col) * sizeof(int);
+    int* matrix = malloc(size);
+    if (matrix == NULL)
+        exit(88);
+    temp = fread(fp, matrix, size);
+    if (temp != size)
+        exit(91);
+
+    temp = fclose(fp);
+    if (temp == -1)
+        exit(92);
+    return matrix;
+}
+```
+
+1. 异常 `code=91`
+
+后经单步调试发现在调用 `fopen` 函数时出现错误：
+
+```error
+Error: ENOENT: no such file or directory, open '/inputs/test_read_matrix/test_input.bin'
+```
+
+---
+
+上述错误是由于在 Windows 中产生，因为 Windows 与此项目并不兼容。显然，`code=91` 错误出现在 `fread` 中，将采用肉眼排查法进行 debug：
+
+```assembly
+jal fread
+li t0, 4
+beq a0, t0, exit91 # fread error
+```
+
+显然，`beq` 应为 `bne`。
+
+2. 异常 `code=88`
+
+```assembly
+# read file: row, col
+mv a1, s3 # fp
+mv a2, s1 # &row
+li a3, 4  # sizeof(int)
+jal fread
+li t0, 4
+bne a0, t0, exit91 # fread error
+mv a2, s2 # &col
+li a3, 4  # sizeof(int)
+bne a0, t0, exit91 # fread error
+lw s1, 0(s1) # row, only one byte
+lw s2, 0(s2) # col
+```
+
+查看分配内存处发现没有错误，向前排查时发现：缺少一句 `jal fread` 指令，同时还需要对 `a1`, `a2`, `a3`, `t0` 重新赋值。
+
+3. 输出异常
+
+![debug 3](./outputs/img/debug3.png)
+
+观察 bin 文件，发现此处打印出 123 就已经换行，故排除换行问题。
+
+```bash
+$ hexdump test_input.bin       
+0000000 0003 0000 0003 0000 0001 0000 0002 0000
+0000010 0003 0000 0004 0000 0005 0000 0006 0000
+0000020 0007 0000 0008 0000 0009 0000
+000002c
+```
+
+经过反复尝试后，发现是传递给 `fread` 的参数出错——每个参数应当左移两位，以满足 `sizeof(int)` 的需求。添加一个存储与 `s5` 中的临时变量即可解决这个问题。
+
+---
+
+![task 1b](./outputs/img/task1b.png)
+
+### Task 2
+
+```c
+void write_matrix(char* filename, int* matrix, int row, int col) {
+    FILE* fp = fopen(filename, "w");
+    if (fp == NULL)
+        exit(93);
+
+    /* 实际上本处可以采用 la 进行优化，但是为了简单起见，采用 lw 读取 */
+    int* buffer = malloc(2 * sizeof(int)); // 分配给汇编下的a0，只是临时的，无需free
+    buffer[0] = row;
+    buffer[1] = col;
+    int temp = fwrite(fp, buffer, 2, sizeof(int));
+    if (temp != 2)
+        exit(94);
+
+    int size = row * col;
+    temp = fwrite(fp, matrix, size, sizeof(int));
+    if (temp != size)
+        exit(94);
+
+    temp = fclose(fp);
+    if (temp == -1)
+        exit(95)
+}
+```
+
+---
+
+有一些简单的 bug，都是 typo 引起的错误，就不列出。
+
+![task 2b](./outputs/img/task2b.png)
+
+### Task 3
+

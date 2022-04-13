@@ -24,17 +24,77 @@
 # ==============================================================================
 write_matrix:
 
-    # Prologue
+    # allocate memory
+    addi sp, sp, -28
+    sw s0, 0(sp)
+    sw s1, 4(sp)
+    sw s2, 8(sp)
+    sw s3, 12(sp)
+    sw s4, 16(sp)
+    sw s5, 20(sp)
+    sw ra, 24(sp)
 
+    mv s0, a0 # filename
+    mv s1, a1 # matrix
+    mv s2, a2 # row
+    mv s3, a3 # col
 
+    # open file
+    mv a1, s0
+    li a2, 1
+    jal fopen
+    li t0, -1
+    beq a0, t0, exit93 # file open error
+    mv s4, a0 # fp pointer
 
+    # file write: row, col
+    li a0, 8 # buffer
+    jal malloc
+    sw s2, 0(a0) # &row
+    sw s3, 4(a0) # &col
 
+    li s5, 2
+    mv a1, s4
+    mv a2, a0
+    mv a3, s5
+    li a4, 4
+    jal fwrite
+    bne a0, s5, exit94 # write error
 
+    # file write: matrix
+    mul s5, s2, s3
+    mv a1, s4
+    mv a2, s1 # matrix
+    mv a3, s5
+    li a4, 4
+    jal fwrite
+    bne a0, s5, exit94 # write error
 
+    # close file
+    mv a1, s4
+    jal fclose
+    li t0, -1
+    beq a0, t0, exit95 # fclose error
 
-
-
-    # Epilogue
-
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    lw s2, 8(sp)
+    lw s3, 12(sp)
+    lw s4, 16(sp)
+    lw s5, 20(sp)
+    lw ra, 24(sp)
+    addi sp, sp, 28
 
     ret
+
+exit93:
+    li a1, 93
+    j exit2
+
+exit94:
+    li a1, 94
+    j exit2
+
+exit95:
+    li a1, 95
+    j exit2
