@@ -18,3 +18,4 @@
     * [lab04](./labs/lab04): RISC-V Functions, Pointers
 * [projects](https://inst.eecs.berkeley.edu/~cs61c/fa20/#projects)
     * [proj1](./projects/proj1): The Game of Life
+    * [proj2](./projects/proj2): Classify

@@ -18,11 +18,10 @@
 #   this function terminates the program with error code 76.
 # =======================================================
 dot:
-    li t0, 0
-    ble a2, t0, exit75 # check if length of vector is less than 1
+    ble a2, x0, exit75 # check if length of vector is less than 1
     # check if stride of either vector is less than 1
-    ble a3, t0, exit76
-    ble a4, t0, exit76
+    ble a3, x0, exit76
+    ble a4, x0, exit76
 
     # allocate space
     addi sp, sp, -12

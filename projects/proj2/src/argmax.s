@@ -23,9 +23,10 @@ argmax:
 
 loop_start:
     # allocate memory
-    addi sp, sp, -8
+    addi sp, sp, -12
     sw s0, 0(sp)
     sw s1, 4(sp)
+    sw ra, 8(sp)
 
     add t0, x0, x0 # i = 0
     add s0, x0, x0 # max_index = 0
@@ -41,7 +42,7 @@ loop_continue:
     # load next element
     lw t1, 0(a0) # temp_next = array[i]
     ble t1, s1, loop_continue # if temp_next <= max, jump to loop_continue
-    mv s1, s1 # max = temp_next
+    mv s1, t1 # max = temp_next
     add s0, t0, x0 # max_index = i
     j loop_continue
 
@@ -51,7 +52,8 @@ loop_end:
 
     # pop stack
     lw s0, 0(sp)
-    lw s1, 0(sp)
-    addi sp, sp, 8
+    lw s1, 4(sp)
+    lw ra, 8(sp)
+    addi sp, sp, 12
 
     ret
