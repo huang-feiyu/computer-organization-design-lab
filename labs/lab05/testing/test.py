@@ -37,9 +37,9 @@ class TestCase():
       reference = open(self.tracefile)
       passed = compare_unbounded(proc.stdout,reference, filename)
     finally:
-      try: 
+      try:
         os.kill(proc.pid,signal.SIGTERM)
-      except Exception as e: 
+      except Exception as e:
         pass
     if passed:
       return (True, "Matched expected output")
@@ -77,7 +77,7 @@ def run_tests(tests):
     else:
       print("\tFAILED test: %s (%s)" % (description, reason))
       tests_failed += 1
-  
+
   print("Passed %d/%d tests" % (tests_passed, (tests_passed + tests_failed)))
 
 tests = [
