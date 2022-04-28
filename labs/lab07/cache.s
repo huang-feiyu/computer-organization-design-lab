@@ -4,13 +4,13 @@
 #    understand how the cache parameters affect cache performance.
 #
 # PSEUDOCODE:
-#    int array[];  //Assume sizeof(int) == 4
+#    int array[];  // Assume sizeof(int) == 4
 #    for (k = 0; k < repcount; k++) {		// repeat repcount times
 #      /* Step through the selected array segment with the given step size. */
 #      for (index = 0; index < arraysize; index += stepsize) {
-#        if(option==0)
+#        \if (option == 0)
 #          array[index] = 0;			// Option 0: One cache access - write
-#        else
+#        \else
 #          array[index] = array[index] + 1;	// Option 1: Two cache accesses - read AND write
 #      }
 #    }

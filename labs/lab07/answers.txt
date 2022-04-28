@@ -1,51 +1,76 @@
 Exercise 1
 	Scenario 1
-		1. 
-		2.
-		3.
+		1. Because integers of step-size in bytes is exactly equal to cache block size. (32 bytes)
+		2. No. Because the cache we can access is ALWAYS the 1st one.
+		3. Change the step-size 1.
+		   (step-size = 1 => 4 bytes < 8 bytes => Hit rate = 50%, cause there is a repeat.)
 
 	Scenario 2
-		1.
-		2.
-		3.
-		4.
-		5.
+		1. 2 memory accesses per iteration of the inner loop. (read & write)
+		2. MISS, HIT, HIT, HIT. Because every time cache load 16 bytes to its block:
+		   						a[i] R MISS, a[i] W HIT, a[i+2] R HIT, a[i+2] W HIT
+		3. 3/4 = 75%
+		4. Hit rate goes to 100%. Because every element in the array is cached, cache size is big enough.
+		5. Divide and Conquer. To increase temporal locality, split array into parts in which every part's size is exactly the cached size.
 
-	Scenario 3
-		1.
-		2.
-		3.
-		4.
-		5.
+	Scenario 3 (![img](https://ask.qcloudimg.com/http-save/yehe-5465588/ifxf2vsw3r.jpeg?imageView2/2/w/1620))
+		1. L1: 50%; L2: 0; Overall: 50%
+		2. 32 accesses, 16 of them are misses.
+		3. 16 accesses, 16 of them are misses.
+		4. repeat-count.
+		5. Nothing. L1 hit rate increase, L2 hit rate still 0. (fetching data size matters)
 
 Exercise 2
-	ijk:
-	ikj:
-	jik:
-	jki:
-	kij:
-	kji:
+	ijk:    n = 1000, 2.513 Gflop/s
+	ikj:    n = 1000, 1.364 Gflop/s
+	jik:    n = 1000, 1.907 Gflop/s
+	jki:    n = 1000, 13.817 Gflop/s
+	kij:    n = 1000, 1.573 Gflop/s
+	kji:    n = 1000, 11.257 Gflop/s
 
-	1.
-	2.
-	3.
+	1. jki. Because spatial & temporal locality.
+	2. ikj. Skip the cache blocksize.
+	3. More stride, less efficient.
 
 Exercise 3
 	Part 1
-		blocksize = 20, n = 100: 
-		blocksize = 20, n = 1000: 
-		blocksize = 20, n = 2000: 
-		blocksize = 20, n = 5000: 
-		blocksize = 20, n = 10000: 
+		blocksize = 20, n = 100:
+        	naive transpose: 0.004 milliseconds
+        	transpose with blocking: 0.003 milliseconds
+		blocksize = 20, n = 1000:
+            naive transpose: 1.508 milliseconds
+            transpose with blocking: 2.214 milliseconds
+		blocksize = 20, n = 2000:
+	        naive transpose: 5.892 milliseconds
+	        transpose with blocking: 9.004 milliseconds
+		blocksize = 20, n = 5000:
+	        naive transpose: 119.725 milliseconds
+        	transpose with blocking: 58.825 milliseconds
+		blocksize = 20, n = 10000:
+			naive transpose: 625.251 milliseconds
+			transpose with blocking: 247.806 milliseconds
 
-		1.
-		2.
+		1. #4
+		2. One line of elements' size might less than the cache size, so it can be cached.
+		   There is no cache blocking.
 
 	Part 2
 		blocksize = 50, n = 10000:
+	        naive transpose: 671.468 milliseconds
+        	transpose with blocking: 192.019 milliseconds
 		blocksize = 100, n = 10000:
+	        naive transpose: 674.589 milliseconds
+        	transpose with blocking: 153.471 milliseconds
 		blocksize = 500, n = 10000:
+	        naive transpose: 676.253 milliseconds
+        	transpose with blocking: 151.347 milliseconds
 		blocksize = 1000, n = 10000:
+			naive transpose: 677.079 milliseconds
+			transpose with blocking: 149.382 milliseconds
 		blocksize = 5000, n = 10000:
+			naive transpose: 678.782 milliseconds
+			transpose with blocking: 565.85 millisecond
 
-		1.
+		1. While blocksize is 1/100~1/10, the time is close.
+		   While it is 1/2, the time is roughly the same as naive one.
+

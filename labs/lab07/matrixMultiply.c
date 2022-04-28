@@ -4,14 +4,14 @@
 #include <time.h>
 
 
-/* To save you time, we are including all 6 variants of the loop ordering
-   as separate functions and then calling them using function pointers.
-   The reason for having separate functions that are nearly identical is
-   to avoid counting any extraneous processing towards the computation
-   time.  This includes I/O accesses (printf) and conditionals (if/switch).
-   I/O accesses are slow and conditional/branching statements could
-   unfairly bias results (lower cases in switches must run through more
-   case statements on each iteration).
+/*  To save you time, we are including all 6 variants of the loop ordering
+    as separate functions and then calling them using function pointers.
+    The reason for having separate functions that are nearly identical is
+    to avoid counting any extraneous processing towards the computation
+    time.  This includes I/O accesses (printf) and conditionals (if/switch).
+    I/O accesses are slow and conditional/branching statements could
+    unfairly bias results (lower cases in switches must run through more
+    case statements on each iteration).
 */
 void multMat1( int n, float *A, float *B, float *C ) {
     int i,j,k;
