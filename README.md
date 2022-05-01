@@ -16,6 +16,11 @@
     * [lab02](./labs/lab02): Advanced C
     * [lab03](./labs/lab03): RISC-V Assembly
     * [lab04](./labs/lab04): RISC-V Functions, Pointers
+    * [lab05](./labs/lab05): Logisim
+    * [lab06](./labs/lab06): Pipelining and CPU, Mid Semester Survey
+    * [lab07](./labs/lab07): Caches
+    * [lab08](./labs/lab08): Virtual Memory
 * [projects](https://inst.eecs.berkeley.edu/~cs61c/fa20/#projects)
     * [proj1](./projects/proj1): The Game of Life
     * [proj2](./projects/proj2): Classify
+
