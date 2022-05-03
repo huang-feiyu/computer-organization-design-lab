@@ -85,7 +85,7 @@ The last 2 output is `xxxxxxxx` sometimes. It means that the register is not use
 
 <s>Test in local GUI environment, when I use the check `rs1` and `rs2`, I found that it is `UUUUUUUU`.(Write is Okay) So it is wrong with the `MUX`?</s> I cannot find.
 
-When I use others' registers, I found that the first test could pass, but the second test failed. In my opinion, the components are exactly the same. What is wrong with me? So I just use it, but I don't know why.
+When I use others' registers, I found that the first test could pass, but the second test failed. In my opinion, the components are exactly the same. What is wrong with me? So I just use it, but I don't know why.——I found why: it is my computer's or my Logisim's fault that the `register` is wrong literally.
 
 The wrong message is obviously, `x0` output is wrong. I fixed it and passed the test.
 
@@ -100,4 +100,58 @@ Running tests for part_a/regfile...
 Passed 4/4 tests
 ```
 
+### Task 3: The `addi` instruction
+
+`addi` instruction: `imm[11:0]` `rs2[4:0]` `rs1[4:0]` `000` `rd[4:0]` `0010011`
+
+#### Info: circ
+
+1. `mem.circ`: combined RAM
+    * word-addressable but **byte** level write enabled
+    * `rs#` will **always** return the value in memory at the supplied address
+2. `branch_comp.circ`
+3. `imm_gen.circ`
+    * requires an immediate generator, but in partA we can use hard-wire
+4. `cpu.circ`
+    * implement single-stage processor first, then modify it to have 2-stage pipeline
+    * two-stage pipeline: IF; ID, EX, EME, WB
+5. `control_logic.circ`
+
+#### Info: Single Stage CPU
+
+1. IF: Instruction Fetch
+    * PC
+2. ID: Instruction Decode
+    * instruction
+3. EX: Execute
+    * ALU
+4. MEM: Memory
+5. WB: Write Back
+    * RegFile
+
+After implementing part of `imm_gen.circ`, `cpu.circ`, passed easily.
+
+```bash
+Running tests for part_a/addi_single...
+        PASSED test: cpu-addi-single test
+Passed 1/1 tests
+```
+
+#### Info: Pipelining CPU
+
+* Stage 1: IF
+* Stage 2: ID, EX, MEM, WB
+
+* Will the IF and EX stages have the same or different PC values?<br/>
+    * No, they have different PC values.
+* Do you need to store the PC between the pipelining stages?<br/>
+    * No, for now the PC is not needed.
+
+A little bug: the `register` in my computer is wrong, so I have to copy from the PC. It's fine besides it.
+
+```bash
+Running tests for part_a/addi_pipelined...
+        PASSED test: cpu-addi-pipelined test
+Passed 1/1 tests
+```
 
