@@ -79,9 +79,25 @@ Use `MUX` to get `rs1` and `rs2`.
 
 The last 2 output is `xxxxxxxx` sometimes. It means that the register is not used.
 
-~~I guess: something wrong with the wire-connecting.~~Doesn't matter.
+<s>I guess: something wrong with the wire-connecting.</s> Doesn't matter.
 
-~~I cannot figure it out, so take a look at others' circuit. It seems that it is blame to the `clk`: I should use `clock` input directly?~~Also failed.
+<s>I cannot figure it out, so take a look at others' circuit. It seems that it is blame to the `clk`: I should use `clock` input directly?</s> Also failed.
 
-~~Test in local GUI environment, when I use the check `rs1` and `rs2`, I found that it is `UUUUUUUU`.(Write is Okay) So it is wrong with the `MUX`?~~I cannot find.
+<s>Test in local GUI environment, when I use the check `rs1` and `rs2`, I found that it is `UUUUUUUU`.(Write is Okay) So it is wrong with the `MUX`?</s> I cannot find.
+
+When I use others' registers, I found that the first test could pass, but the second test failed. In my opinion, the components are exactly the same. What is wrong with me? So I just use it, but I don't know why.
+
+The wrong message is obviously, `x0` output is wrong. I fixed it and passed the test.
+
+#### Output
+
+```bash
+Running tests for part_a/regfile...
+        PASSED test: regfile-allregs test
+        PASSED test: regfile-insert test
+        PASSED test: regfile-x0 test
+        PASSED test: regfile-zero test
+Passed 4/4 tests
+```
+
 
