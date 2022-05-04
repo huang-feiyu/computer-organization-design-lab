@@ -16,7 +16,7 @@
 
 #### Debug
 
-```bash
+```diff
 =====alu-add=====
 =====alu-comprehensive=====
 16,17c16,17
@@ -154,4 +154,35 @@ Running tests for part_a/addi_pipelined...
         PASSED test: cpu-addi-pipelined test
 Passed 1/1 tests
 ```
+
+## Part B
+
+### Task 4: More Instructions
+
+#### ISA
+
+> The Instruction Set Architecture
+
+* R: `add`, `mul`, `sub`, `sll`, `mulh`, `mulhu`, `slt`, `xor`, `srl`, `sra`, `or`, `and`
+* I: `lb`, `lh`, `lw`, `addi`, `slli`, `slti`, `xori`, `srli`, `srai`, `ori`, `andi`
+    `jalr`, `csrrw`, `csrrwi`
+* S: `sb`, `sh`, `sw`
+* SB: `beq`, `bne`, `blt`, `bge`, `bltu`, `bgeu`
+* U: `auipc`, `lui`
+* UJ: `jal`
+
+It is a lot, isn't it?
+
+#### Info: circ
+
+* `mem.circ`: give to memory a byte address, the bottom 2 bits will be ignored, it returns 4 bytes addressed from the byte address without the bottom 2 bits are 0.
+* `branch_comp.circ`: compares two values and outputs control signals
+* `imm_gen.circ`: extracts the appropriate immediate from `I`, `S`, `SB`, `U`, `UJ`
+    * specially, `csrrwi` is not I-type to a certain extent
+* `control_logic.circ`: to identify each instruction correctly
+* `csr.circ`: Control Status Register
+    * [csr in *riscv-spec*](https://riscv.org/wp-content/uploads/2017/05/riscv-spec-v2.2.pdf) (use `Ctrl+F` to find it)
+* `cpu.circ`: connects all the components
+    * use `addi x0, x0, 0` as nop (`0x13`)
+    * what you need to think about Pipeline
 
