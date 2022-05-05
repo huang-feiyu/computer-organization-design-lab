@@ -34,6 +34,7 @@ long long int sum_unrolled(unsigned int vals[NUM_ELEMS]) {
         //This is what we call the TAIL CASE
         //For when NUM_ELEMS isn't a multiple of 4
         //NONTRIVIAL FACT: NUM_ELEMS / 4 * 4 is the largest multiple of 4 less than NUM_ELEMS
+
         for(unsigned int i = NUM_ELEMS / 4 * 4; i < NUM_ELEMS; i++) {
             if (vals[i] >= 128) {
                 sum += vals[i];
@@ -51,12 +52,28 @@ long long int sum_simd(unsigned int vals[NUM_ELEMS]) {
     long long int result = 0;				   // This is where you should put your final result!
     /* DO NOT DO NOT DO NOT DO NOT WRITE ANYTHING ABOVE THIS LINE. */
 
-    for(unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
-        /* YOUR CODE GOES HERE */
+    // NOTE: My code here
+    unsigned int vec_res[4];
+    __m128i vec_tmp_sum;
+    for (unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
+        int i;
+        // 32 bit value, we can operate 4 values one time
+        vec_tmp_sum = _mm_setzero_si128();
+        for (i = 0; i < NUM_ELEMS / 4 * 4; i += 4) {
+            __m128i vec_tmp = _mm_loadu_si128((__m128i *)(vals + i)); // cast to vec
+            __m128i vec_gt = _mm_cmpgt_epi32(vec_tmp, _127); // whether is greater than 127
+            vec_tmp = _mm_and_si128(vec_gt, vec_tmp);
+            vec_tmp_sum = _mm_add_epi32(vec_tmp_sum, vec_tmp);
+        }
+        _mm_storeu_si128((__m128i *)vec_res, vec_tmp_sum); // cast to array
+        for (int j = 0; j < 4; j++)
+            result += vec_res[j];
 
-        /* You'll need a tail case. */
-
+        // tail case for the REST elements
+        for (; i < NUM_ELEMS; i++)
+            result += vals[i] < 128 ? 0 : vals[i];
     }
+
     clock_t end = clock();
     printf("Time taken: %Lf s\n", (long double)(end - start) / CLOCKS_PER_SEC);
     return result;
@@ -66,13 +83,44 @@ long long int sum_simd_unrolled(unsigned int vals[NUM_ELEMS]) {
     clock_t start = clock();
     __m128i _127 = _mm_set1_epi32(127);
     long long int result = 0;
-    for(unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
-        /* COPY AND PASTE YOUR sum_simd() HERE */
-        /* MODIFY IT BY UNROLLING IT */
 
-        /* You'll need 1 or maybe 2 tail cases here. */
+    // NOTE: My code here
+    unsigned int vec_res[4];
+    __m128i vec_tmp_sum;
+    for (unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
+        int i;
+        // 32 bit value, we can operate 4 values one time
+        vec_tmp_sum = _mm_setzero_si128();
+        for (i = 0; i < NUM_ELEMS / 16 * 16; i += 16) {
+            __m128i vec_tmp = _mm_loadu_si128((__m128i *)(vals + i));
+            __m128i vec_gt = _mm_cmpgt_epi32(vec_tmp, _127);
+            vec_tmp = _mm_and_si128(vec_gt, vec_tmp);
+            vec_tmp_sum = _mm_add_epi32(vec_tmp_sum, vec_tmp);
 
+            vec_tmp = _mm_loadu_si128((__m128i *)(vals + i + 4));
+            vec_gt = _mm_cmpgt_epi32(vec_tmp, _127);
+            vec_tmp = _mm_and_si128(vec_gt, vec_tmp);
+            vec_tmp_sum = _mm_add_epi32(vec_tmp_sum, vec_tmp);
+
+            vec_tmp = _mm_loadu_si128((__m128i *)(vals + i + 8));
+            vec_gt = _mm_cmpgt_epi32(vec_tmp, _127);
+            vec_tmp = _mm_and_si128(vec_gt, vec_tmp);
+            vec_tmp_sum = _mm_add_epi32(vec_tmp_sum, vec_tmp);
+
+            vec_tmp = _mm_loadu_si128((__m128i *)(vals + i + 12));
+            vec_gt = _mm_cmpgt_epi32(vec_tmp, _127);
+            vec_tmp = _mm_and_si128(vec_gt, vec_tmp);
+            vec_tmp_sum = _mm_add_epi32(vec_tmp_sum, vec_tmp);
+        }
+        _mm_storeu_si128((__m128i *)vec_res, vec_tmp_sum); // cast to array
+        for (int j = 0; j < 4; j++)
+            result += vec_res[j];
+
+        // tail case for the REST elements
+        for (; i < NUM_ELEMS; i++)
+            result += vals[i] < 128 ? 0 : vals[i];
     }
+
     clock_t end = clock();
     printf("Time taken: %Lf s\n", (long double)(end - start) / CLOCKS_PER_SEC);
     return result;

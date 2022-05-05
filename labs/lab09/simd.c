@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
     printf("Sum: %lld\n", reference = sum(vals));
 
     printf("Starting randomized unrolled sum.\n");
-    printf("Sum: %lld\n", sum_unrolled(vals));
+    printf("Sum: %lld\n", reference = sum_unrolled(vals));
 
     printf("Starting randomized SIMD sum.\n");
     printf("Sum: %lld\n", simd = sum_simd(vals));
