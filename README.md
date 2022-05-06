@@ -20,7 +20,9 @@
     * [lab06](./labs/lab06): Pipelining and CPU, Mid Semester Survey
     * [lab07](./labs/lab07): Caches
     * [lab08](./labs/lab08): Virtual Memory
+    * [lab09](./labs/lab09): SIMD
 * [projects](https://inst.eecs.berkeley.edu/~cs61c/fa20/#projects)
     * [proj1](./projects/proj1): The Game of Life
     * [proj2](./projects/proj2): Classify
+    * [proj3](./projects/proj3): CPU
 
