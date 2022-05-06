@@ -169,9 +169,23 @@ Passed 1/1 tests
 * S: `sb`, `sh`, `sw`
 * SB: `beq`, `bne`, `blt`, `bge`, `bltu`, `bgeu`
 * U: `auipc`, `lui`
+    * `auipc`: `R[rd] = PC + {imm, 12'b0}`
+    * `lui`: `R[rd] = {32b'imm<31>, imm, 12'b0}`
 * UJ: `jal`
+    * `jal`: `R[rd] = PC + 4; PC += {imm, 1'b0}`
+    * `jalr`: `R[rd] = PC + 4; PC = R[rs1] + imm`
 
-It is a lot, isn't it?
+Almost everything we should know is in [riscv card](./resources/riscvcard.pdf). It is a lot, isn't it?
+
+Additionally, `mul` and `mulhu` are Extension:
+* `mul`:
+    * func7 = 0000001
+    * func3 = 000
+    * opcode = 0110011
+* `mulh`:
+    * func7 = 0000001
+    * func3 = 001
+    * opcode = 0110011
 
 #### Info: circ
 
@@ -185,4 +199,128 @@ It is a lot, isn't it?
 * `cpu.circ`: connects all the components
     * use `addi x0, x0, 0` as nop (`0x13`)
     * what you need to think about Pipeline
+
+#### Control Logic
+
+* `PCSel`: `PC = PCSel == 0 ? PC + 4 : ALUout`
+    * Regular: always 0
+    * Branches: 1 if true (with `branch_comp.circ`)
+        * Opcode => 0x63
+    * Jumps: always 1
+        * `jalr` Opcode => 0x67
+        * `jal` Opcode => 0x6F
+* `ImmSel`: `imm_gen` input
+    * Assume(From 0 to 5, defined in `imm_gen`): `I`, `S`, `SB`, `U`, `UJ`, `CSRI`
+    * `S`: Opcode => 0x23 (Use 1)
+    * `SB`: Opcode => 0x63 (Use 2)
+    * `U`: Opcode => 0x17/0x37 (Use 3)
+    * `UJ`: Opcode => 0x6F (Use 4)
+    * `CSRI`: Opcode => 0x73 & func3 => 0x5 (Use 5)
+    * `I`: Multiple opcode (Use 0)
+    * `R`: not used, assume it is 0
+* `RegWEn`: Write to `R[rd]` Enable
+    * `R`: Always 1
+        * Opcode => 0x33
+    * `I`: Always 1
+        * Load: Opcode => 0x3
+        * Arithmetic: Opcode => 0x13
+        * `jalr`: Opcode => 0x67
+    * `U`: Always 1
+        * `auipc`: Opcode => 0x17
+        * `lui`: Opcode => 0x37
+    * `UJ`: Always 1
+        * Opcode => 0x6F
+* `BrUn`: Branch flag (unsigned value comparison)
+    * `SB`: Opcode => 0x63
+    * `bltu`, `bgeu`: func3 => 0x6/0x7
+* `ASel`: `OperatorA = ASel == 0 ? rs1 : PC`
+    * `SB`: Opcode => 0x63
+    * `jal`: Opcode => 0x6F
+    * `auipc`: Opcode => 0x17
+* `BSel`: `OperatorB = BSel == 0 ? rs2 : imm`
+    * very similar to `ImmSel`
+* `ALUSel`: perform which operation
+    * `R` & `I` Instruction
+* `MemRW`: Memory operator flag
+    * Read & Write: 1
+        * a new flag import: `LSSel` (Load0/Store1 Select)
+    * Other: 0
+* `WBSel`: which value do we want to write back to `R[rd]`
+    * load: `rs2` => 0
+        * Opcode => 0x3
+    * `R`, `I` Arithmetic & `auipc`: `ALU_output` => 1
+    * `jal`, `jalr`: `PC + 4` => 2
+    * `lui`: `32b'imm<31>, imm, 12'b0` => 3
+* `CSRSel`: CSR Select which operator
+    * `csrrw`: `rs1` => func3 0x0
+    * `csrrwi`: `imm` => func3 0x1
+* `CSRWen`: CSR Write Enable
+    * Opcode => 0x73
+
+#### Control Status Register
+
+* `csrw tohost, t2` => `csrrw x0, csr, rs1` (`csr = 0x51E`)
+* `csrwi tohost, 1` => `csrrwi x0, csr, uimm` (`csr = 0x51E`)
+
+Use a register, then done.
+
+#### CPU
+
+* to handle control hazards: Instruction kills MUST be accomplished by MUXing a `nop` into the instruction stream and sending the `nop` into the Execute stage instead of using the fetched instruction
+    * `nop`: `0x13`
+* IF: `PCSel`
+* ID: `ImmSel`, `RegWEn`
+* EX:
+    * ALU: `ASel`, `BSel`, `ALUSel`
+    * branch comp: `BrUn`
+    * csr: `CSRSel`, `CSRWen`
+* MEM & WB: (MEM is implemented before)
+    * Store: `MemRW`, `LSSel`
+    * Load: `MemRW`, `LSSel`
+    * WB: `WBSel`
+
+#### Debug
+
+1. 3 tests failed
+
+```output
+Running tests for part_b/pipelined...
+        FAILED test: cpu-add-lui-sll test (Did not match expected output)
+        PASSED test: cpu-addi test
+        PASSED test: cpu-branch-jump test
+        FAILED test: cpu-branch test (Did not match expected output)
+        PASSED test: cpu-csrw test
+        PASSED test: cpu-csrwi test
+        PASSED test: cpu-jump test
+        FAILED test: cpu-mem test (Did not match expected output)
+Passed 5/8 tests
+```
+
+Typo: `READ_DATA` => `READ_DATA2`
+
+The first check: I haven't even decode the instruction yet. (`rs2` & `funct7`)
+
+2. 1 test failed
+
+```output
+FAILED test: cpu-mem test (Did not match expected output)
+```
+
+```diff
+=====cpu-mem=====
+3,6c3,6
+< ra:  00000000 sp:  00000000 t0:  00000000 t1:  00000000 t2:  00000000 s0:  12345000 s1:  00000000 a0:  00000000 PC:  00000008 inst:  02802423 Time_Step:  0002
+< ra:  00000000 sp:  00000000 t0:  00000000 t1:  00000000 t2:  00000000 s0:  12345678 s1:  00000000 a0:  00000000 PC:  0000000c inst:  02802083 Time_Step:  0003
+< ra:  00000000 sp:  00000000 t0:  00000000 t1:  00000000 t2:  00000000 s0:  12345678 s1:  00000000 a0:  00000000 PC:  00000010 inst:  00000000 Time_Step:  0004
+< ra:  12345678 sp:  00000000 t0:  00000000 t1:  00000000 t2:  00000000 s0:  12345678 s1:  00000000 a0:  00000000 PC:  00000014 inst:  00000000 Time_Step:  0005
+---
+> ra:  00000000 sp:  00000000 t0:  00000000 t1:  00000000 t2:  00000000 s0:  00000008 s1:  00000000 a0:  00000000 PC:  00000008 inst:  02802423 Time_Step:  0002
+> ra:  00000000 sp:  00000000 t0:  00000000 t1:  00000000 t2:  00000000 s0:  00000680 s1:  00000000 a0:  00000000 PC:  0000000c inst:  02802083 Time_Step:  0003
+> ra:  00000000 sp:  00000000 t0:  00000000 t1:  00000000 t2:  00000000 s0:  00000680 s1:  00000000 a0:  00000000 PC:  00000010 inst:  00000000 Time_Step:  0004
+> ra:  00000000 sp:  00000000 t0:  00000000 t1:  00000000 t2:  00000000 s0:  00000680 s1:  00000000 a0:  00000000 PC:  00000014 inst:  00000000 Time_Step:  0005
+```
+
+Okay, I forgot to assign inputs to `DMEM`, still wrong.
+
+I <font color=red>failed</font> to find this bug.
 
