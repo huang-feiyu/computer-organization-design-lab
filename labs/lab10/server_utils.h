@@ -57,7 +57,7 @@ void http_serve_directory(int socket_fd,  char *path);
 /** Request handler**/
 void handle_files_request(int socket_fd, struct http_request*);
 
-void serve_forever(int *socket_number);
+void server_forever(int *socket_number);
 
 void dispatch(int);
 

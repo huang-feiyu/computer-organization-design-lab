@@ -5,8 +5,9 @@ char *header_tag_left = "<center><h1>";
 char *header_tag_right = "</h1><hr></center>";
 char *content_type = "Content-Type";
 char *content_len = "Content-Length";
-int dotp_size = 100000; // default to 5 0s, can be changed from command line arg
-const char *template_str = "<!DOCTYPE html> \
+int dotp_size = 100000;  // default to 5 0s, can be changed from command line arg
+const char *template_str =
+    "<!DOCTYPE html> \
 <html lang=\"en\"> \
 <head> \
     <meta charset=\"UTF-8\"> \
@@ -31,7 +32,7 @@ void handle_report_request(int socket_fd, int arr_size) {
     free(result);
 }
 
-void http_make_header(int sfd,  char *ftype, int status_code, __off_t size) {
+void http_make_header(int sfd, char *ftype, int status_code, __off_t size) {
     http_start_response(sfd, 200);
     http_send_header(sfd, content_type, ftype);
 
@@ -62,7 +63,7 @@ void handle_bmp_request(int socket_fd, char *path) {
 /** Serves the file at path to the the socket fd. */
 void http_serve_file(int socket_fd, char *path, int size) {
     char *type = http_get_mime_type(basename(path));
-    int  filed, len_count = 0, cnt = 0;
+    int filed, len_count = 0, cnt = 0;
     char buf[BUFSIZ];
 
     http_make_header(socket_fd, type, 200, size);
@@ -77,10 +78,10 @@ void http_serve_file(int socket_fd, char *path, int size) {
 }
 
 /** Serves the directory at path to the the socket fd. */
-void http_serve_directory(int socket_fd,  char *path) {
+void http_serve_directory(int socket_fd, char *path) {
     DIR *dir = opendir(path);
     struct dirent *ent;
-    char* fname;
+    char *fname;
     char buf[64];
 
     http_make_header(socket_fd, "text/html", 200, -1);
@@ -136,7 +137,7 @@ void handle_files_request(int socket_fd, struct http_request *request) {
 
     // If requested file is a bmp image, apply sobel edge detector
     // and deliver the result images
-    if (start_with(request->path, "/filter") && strcmp(http_get_mime_type(request->path), "image/bmp") == 0 ) {
+    if (start_with(request->path, "/filter") && strcmp(http_get_mime_type(request->path), "image/bmp") == 0) {
         strcpy(path + 1, request->path + strlen("/filter"));
         handle_bmp_request(socket_fd, path);
         return;
@@ -190,18 +191,18 @@ void dispatch(int client_socket_number) {
     }
 
     // only support GET request
-    void (*request_handler)(int, struct http_request*) = &handle_files_request;
+    void (*request_handler)(int, struct http_request *) = &handle_files_request;
 
     request_handler(client_socket_number, request);
     close(client_socket_number);
 
-    sleep(5);      // Pretending we are doing some heavy computation...
+    sleep(5);  // Pretending we are doing some heavy computation...
 }
 
 /** Open a TCP socket on all interfaces. *socket_number stores
  * the fd number of the server socket in call request_handler
  * with the accepted socket fd number on an accepted connection.*/
-void serve_forever(int *socket_number) {
+void server_forever(int *socket_number) {
     struct sockaddr_in server_address, client_address;
     size_t client_address_length = sizeof(client_address);
     int client_socket_number;
@@ -214,7 +215,7 @@ void serve_forever(int *socket_number) {
 
     int socket_option = 1;
     if (setsockopt(*socket_number, SOL_SOCKET, SO_REUSEADDR, &socket_option,
-                   sizeof(socket_option)) == -1) {
+                    sizeof(socket_option)) == -1) {
         perror("Failed to set socket options");
         exit(errno);
     }
@@ -225,7 +226,7 @@ void serve_forever(int *socket_number) {
     server_address.sin_port = htons(server_port);
 
     if (bind(*socket_number, (struct sockaddr *)&server_address,
-             sizeof(server_address)) == -1) {
+            sizeof(server_address)) == -1) {
         perror("Failed to bind on socket");
         exit(errno);
     }
@@ -239,26 +240,26 @@ void serve_forever(int *socket_number) {
 
     while (1) {
         client_socket_number = accept(*socket_number,
-                                      (struct sockaddr *) &client_address,
-                                      (socklen_t * ) & client_address_length);
+                                      (struct sockaddr *)&client_address,
+                                      (socklen_t *)&client_address_length);
         if (client_socket_number < 0) {
             perror("Error accepting socket");
             continue;
         }
 
         printf("Accepted connection from %s on port %d\n",
-               inet_ntoa(client_address.sin_addr), client_address.sin_port);
+                inet_ntoa(client_address.sin_addr), client_address.sin_port);
 
         pid_t parent_pid = getpid();
 #ifdef PROC
         // PART2 TASK: Implement forking
-        /* YOUR CODE HERE */
+        pid_t child_pid = fork();
 
-        if (/* YOUR CODE HERE */) {
+        if (child_pid == 0) { // the child process
             // Kill child process if parent dies
             int r = prctl(PR_SET_PDEATHSIG, SIGTERM);
 
-            /* YOUR CODE HERE */
+            prctl(PR_SET_PDEATHSIG, SIGKILL); // send SIGKILL to the child
 
             // Exit with code 1 when there was an error,
             // or when the parent has been killed
@@ -267,7 +268,7 @@ void serve_forever(int *socket_number) {
                 exit(1);
             }
 
-            /* YOUR CODE HERE */
+            dispatch(client_socket_number);
         }
 #else
         dispatch(client_socket_number);
