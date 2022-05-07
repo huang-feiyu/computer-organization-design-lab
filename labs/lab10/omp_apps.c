@@ -1,6 +1,6 @@
 #include "omp_apps.h"
 
-/* -------------------------------Dot Product------------------------------*/
+/*-------------------------------Dot Product------------------------------*/
 double* gen_array(int n) {
     double* array = (double*)malloc(n * sizeof(double));
     for (int i = 0; i < n; i++) array[i] = drand48();
@@ -9,11 +9,11 @@ double* gen_array(int n) {
 
 double dotp_naive(double* x, double* y, int arr_size) {
     double global_sum = 0.0;
-    #pragma omp parallel
+#pragma omp parallel
     {
-        #pragma omp for
+#pragma omp for
         for (int i = 0; i < arr_size; i++)
-            #pragma omp critical
+#pragma omp critical
             global_sum += x[i] * y[i];
     }
     return global_sum;
@@ -22,32 +22,31 @@ double dotp_naive(double* x, double* y, int arr_size) {
 // EDIT THIS FUNCTION PART 1
 double dotp_manual_optimized(double* x, double* y, int arr_size) {
     double global_sum = 0.0;
-    #pragma omp parallel
-    {
-        #pragma omp for
+    double *sum = malloc(omp_get_max_threads() * sizeof(double));
+    for (int i = 0; i < omp_get_max_threads(); i++) sum[i] = 0.0;
+
+#pragma omp parallel for
         for (int i = 0; i < arr_size; i++)
-            #pragma omp critical
-            global_sum += x[i] * y[i];
-    }
+            sum[omp_get_thread_num()] += x[i] * y[i];
+
+    for (int i = 0; i < omp_get_max_threads(); i++) global_sum += sum[i];
     return global_sum;
 }
 
 // EDIT THIS FUNCTION PART 2
 double dotp_reduction_optimized(double* x, double* y, int arr_size) {
     double global_sum = 0.0;
-    #pragma omp parallel
-    {
-        #pragma omp for
+
+#pragma omp parallel for reduction(+: global_sum)
         for (int i = 0; i < arr_size; i++)
-            #pragma omp critical
             global_sum += x[i] * y[i];
-    }
+
     return global_sum;
 }
 
 char* compute_dotp(int arr_size) {
     // Generate input vectors
-    char* report_buf = (char*)malloc(BUF_SIZE), *pos = report_buf;
+    char *report_buf = (char*)malloc(BUF_SIZE), *pos = report_buf;
     double start_time, run_time;
 
     double *x = gen_array(arr_size), *y = gen_array(arr_size);
@@ -84,7 +83,7 @@ char* compute_dotp(int arr_size) {
 
         run_time = omp_get_wtime() - start_time;
         pos += sprintf(pos, "Reduction Optimized: %d thread(s) took %f seconds\n",
-                       i, run_time);
+                        i, run_time);
 
         // verify result is correct (within some threshold)
         if (fabs(serial_result - result) > 0.001) {
@@ -105,10 +104,9 @@ char* compute_dotp(int arr_size) {
     return report_buf;
 }
 
-
 /* ---------------------Image Processing: Sobel Edge Detector----------------------*/
 int sobel[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
-void sobel_filter(bmp_pixel **src, bmp_pixel **dst, int row, int col) {
+void sobel_filter(bmp_pixel** src, bmp_pixel** dst, int row, int col) {
     int res = 0;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -116,17 +114,17 @@ void sobel_filter(bmp_pixel **src, bmp_pixel **dst, int row, int col) {
             res += ((int)pxl.blue + (int)pxl.green + (int)pxl.red) * sobel[i][j];
         }
     }
-    res *= 2;    // scale a little bit so the result image is brighter.
-    res = res < 0? 0 : (res > 255? 255 : res);
+    res *= 2;  // scale a little bit so the result image is brighter.
+    res = res < 0 ? 0 : (res > 255 ? 255 : res);
     bmp_pixel_init(&dst[row][col], res, res, res);
 }
 
-char *image_proc(const char* filename) {
+char* image_proc(const char* filename) {
     bmp_img img, img_copy;
     if (bmp_img_read(&img, filename) != 0)
         return 0;
 
-    char *res= (char*)calloc(32, sizeof(char));
+    char* res = (char*)calloc(32, sizeof(char));
     strncat(res, filename, strlen(filename) - 4);
     strcat(res, "_sobel.bmp");
 
@@ -138,8 +136,8 @@ char *image_proc(const char* filename) {
 
     // To parallelize this for loops, check out scheduling policy: http://jakascorner.com/blog/2016/06/omp-for-scheduling.html
     // and omp collapse directive https://software.intel.com/en-us/articles/openmp-loop-collapse-directive
-    for (int i = 1; i < hgt-1; i++) {
-        for (int j = 1; j < wid-1; j++) {
+    for (int i = 1; i < hgt - 1; i++) {
+        for (int j = 1; j < wid - 1; j++) {
             sobel_filter(img.img_pixels, img_copy.img_pixels, i, j);
         }
     }
