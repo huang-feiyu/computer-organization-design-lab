@@ -21,8 +21,11 @@
     * [lab07](./labs/lab07): Caches
     * [lab08](./labs/lab08): Virtual Memory
     * [lab09](./labs/lab09): SIMD
+    * [lab10](./labs/lab10): Thread Level Parallelism
+    * [lab11](./labs/lab11): Spark / Dependability
 * [projects](https://inst.eecs.berkeley.edu/~cs61c/fa20/#projects)
     * [proj1](./projects/proj1): The Game of Life
     * [proj2](./projects/proj2): Classify
     * [proj3](./projects/proj3): CPU
 
+——有些项目存在 bug，如果我记得的话，我会在某个时候修复。
