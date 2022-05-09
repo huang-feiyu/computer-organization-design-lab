@@ -31,8 +31,8 @@ def createIndices(file_name, output="spark-wc-out-createIndices"):
     file = sc.sequenceFile(file_name)
 
     indices = file.flatMap(flatMapFunc) \
-                 .map(mapFunc) \
-                 .reduceByKey(reduceFunc)
+                .map(mapFunc) \
+                .reduceByKey(reduceFunc)
 
     indices.coalesce(1).saveAsTextFile(output)
 

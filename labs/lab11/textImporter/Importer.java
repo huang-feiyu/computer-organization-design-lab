@@ -1,6 +1,6 @@
 /*  Written by Ariel Rabkin <asrabkin@gmail.com>, 2011.
  * Copyright 2011, the Regents of the University of California.
-  
+
   Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
@@ -21,7 +21,7 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 import java.io.*;
@@ -43,17 +43,17 @@ import org.apache.hadoop.io.compress.bzip2.CBZip2InputStream;
  * in output dir.
  * If invoked on a directory, recursively scans that directory and subdirs for .txt
  * files, storing output to output dir.
- * 
+ *
  * Each input file is split at boundaries, where a boundary is a line containing
  * exactly the text: "---END.OF.DOCUMENT---"
- * 
+ *
  * Will also process .bz2 files, first decompressing them.
- * 
+ *
  * Default output dir is "convertedOut"
  *
  *  Written by Ariel Rabkin, asrabkin@gmail.com
- *  Licensed under the terms of the New BSD License. 
- *  
+ *  Licensed under the terms of the New BSD License.
+ *
  */
 public class Importer {
 
@@ -69,11 +69,11 @@ public class Importer {
         System.exit(-1);
       } else
         System.out.println("starting scan of " + args[0]);
-      
+
       if(args.length > 1)
         outDir = new File(args[1]);
       System.out.println("dumping output to " + outDir.getAbsolutePath());
-      
+
       lookForFiles(new File(args[0]));
       long avgRecLength = totalBytes / totalRecords;
       System.out.println("total data, uncompressed was " + totalBytes/ (1024 * 1024) + " MB");
@@ -82,7 +82,7 @@ public class Importer {
       e.printStackTrace();
     }
   }
-  
+
   public static Text hash(Text content) throws Exception {
     StringBuilder sb = new StringBuilder();
     sb.append("doc_");
@@ -98,7 +98,7 @@ public class Importer {
     }
     return new Text(sb.toString());
   }
-  
+
   static void lookForFiles(File file) throws Exception {
     if(file.isDirectory()) {
       File[] contents = file.listFiles();
@@ -113,12 +113,12 @@ public class Importer {
         copyFile(file);
     }
   }
-  
+
   public static void copyFile(File file) throws Exception {
 //    String TEST_PREFIX = "";
     File destFile = new File(outDir,file.getName()+".seq");
     Path dest = new Path(destFile.getAbsolutePath());
-    
+
     Configuration conf = new Configuration();
     FileSystem fileSys = org.apache.hadoop.fs.FileSystem.get(new java.net.URI(conf.get("fs.default.name")),conf);
     CompressionCodec codec = new DefaultCodec();
@@ -130,12 +130,12 @@ public class Importer {
     String filename = file.getName();
     InputStream in = new BufferedInputStream(new FileInputStream(file));
     if(filename.endsWith(".bz2")) {
-     in.read();
-     in.read(); //snarf header
-     in = new CBZip2InputStream(in);
+      in.read();
+      in.read(); //snarf header
+      in = new CBZip2InputStream(in);
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(in, "US-ASCII"));
-    
+
     System.out.println("working on file " + file);
     int records = 0;
     long bytes = 0, bytes_since_status = 0;
@@ -174,7 +174,7 @@ public class Importer {
     long time = (System.currentTimeMillis() - startTime)/ 1000 + 1;
     long kbSec = bytes / 1024 / time;
     System.out.println(new java.util.Date());
-    System.out.println("File " + file.getName() + " " + records+ " records, " + 
+    System.out.println("File " + file.getName() + " " + records+ " records, " +
         bytes + " bytes in " + time+ " seconds ("  +kbSec + " KB/sec).");
     in.close();
     seqFileWriter.close();
