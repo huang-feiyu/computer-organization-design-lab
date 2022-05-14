@@ -4,14 +4,17 @@ from unittest import TestCase
 """
 For each operation, you should write tests to test  on matrices of different sizes.
 Hint: use dp_mc_matrix to generate dumbpy and numc matrices with the same data and use
-      cmp_dp_nc_matrix to compare the results
+    cmp_dp_nc_matrix to compare the results
 """
+
+
 class TestAdd(TestCase):
     def test_small_add(self):
         # TODO: YOUR CODE HERE
         dp_mat1, nc_mat1 = rand_dp_nc_matrix(2, 2, seed=0)
         dp_mat2, nc_mat2 = rand_dp_nc_matrix(2, 2, seed=1)
-        is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
+        is_correct, speed_up = compute(
+            [dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
         self.assertTrue(is_correct)
         print_speedup(speed_up)
 
@@ -23,12 +26,14 @@ class TestAdd(TestCase):
         # TODO: YOUR CODE HERE
         pass
 
+
 class TestSub(TestCase):
     def test_small_sub(self):
         # TODO: YOUR CODE HERE
         dp_mat1, nc_mat1 = rand_dp_nc_matrix(2, 2, seed=0)
         dp_mat2, nc_mat2 = rand_dp_nc_matrix(2, 2, seed=1)
-        is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
+        is_correct, speed_up = compute(
+            [dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "add")
         self.assertTrue(is_correct)
         print_speedup(speed_up)
 
@@ -39,6 +44,7 @@ class TestSub(TestCase):
     def test_large_sub(self):
         # TODO: YOUR CODE HERE
         pass
+
 
 class TestAbs(TestCase):
     def test_small_abs(self):
@@ -56,6 +62,7 @@ class TestAbs(TestCase):
         # TODO: YOUR CODE HERE
         pass
 
+
 class TestNeg(TestCase):
     def test_small_neg(self):
         # TODO: YOUR CODE HERE
@@ -63,6 +70,7 @@ class TestNeg(TestCase):
         is_correct, speed_up = compute([dp_mat], [nc_mat], "neg")
         self.assertTrue(is_correct)
         print_speedup(speed_up)
+
     def test_medium_neg(self):
         # TODO: YOUR CODE HERE
         pass
@@ -71,12 +79,14 @@ class TestNeg(TestCase):
         # TODO: YOUR CODE HERE
         pass
 
+
 class TestMul(TestCase):
     def test_small_mul(self):
         # TODO: YOUR CODE HERE
         dp_mat1, nc_mat1 = rand_dp_nc_matrix(2, 2, seed=0)
         dp_mat2, nc_mat2 = rand_dp_nc_matrix(2, 2, seed=1)
-        is_correct, speed_up = compute([dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "mul")
+        is_correct, speed_up = compute(
+            [dp_mat1, dp_mat2], [nc_mat1, nc_mat2], "mul")
         self.assertTrue(is_correct)
         print_speedup(speed_up)
 
@@ -87,6 +97,7 @@ class TestMul(TestCase):
     def test_large_mul(self):
         # TODO: YOUR CODE HERE
         pass
+
 
 class TestPow(TestCase):
     def test_small_pow(self):
@@ -104,6 +115,7 @@ class TestPow(TestCase):
         # TODO: YOUR CODE HERE
         pass
 
+
 class TestGet(TestCase):
     def test_get(self):
         # TODO: YOUR CODE HERE
@@ -111,7 +123,8 @@ class TestGet(TestCase):
         rand_row = np.random.randint(dp_mat.shape[0])
         rand_col = np.random.randint(dp_mat.shape[1])
         self.assertEqual(round(dp_mat[rand_row][rand_col], decimal_places),
-            round(nc_mat[rand_row][rand_col], decimal_places))
+                         round(nc_mat[rand_row][rand_col], decimal_places))
+
 
 class TestSet(TestCase):
     def test_set(self):
@@ -120,7 +133,8 @@ class TestSet(TestCase):
         rand_row = np.random.randint(dp_mat.shape[0])
         rand_col = np.random.randint(dp_mat.shape[1])
         self.assertEquals(round(dp_mat[rand_row][rand_col], decimal_places),
-            round(nc_mat[rand_row][rand_col], decimal_places))
+                          round(nc_mat[rand_row][rand_col], decimal_places))
+
 
 class TestShape(TestCase):
     def test_shape(self):

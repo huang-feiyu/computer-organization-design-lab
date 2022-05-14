@@ -133,7 +133,7 @@ void pow_test(void) {
     matrix *mat = NULL;
     CU_ASSERT_EQUAL(allocate_matrix(&result, 2, 2
 
-                                   ),
+                                    ),
                     0);
     CU_ASSERT_EQUAL(allocate_matrix(&mat, 2, 2), 0);
     set(mat, 0, 0, 1);
@@ -271,17 +271,17 @@ int main(void) {
 
     /* add the tests to the suite */
     if ((CU_add_test(pSuite, "add_test", add_test) == NULL) ||
-            (CU_add_test(pSuite, "sub_test", sub_test) == NULL) ||
-            (CU_add_test(pSuite, "mul_test", mul_test) == NULL) ||
-            (CU_add_test(pSuite, "neg_test", neg_test) == NULL) ||
-            (CU_add_test(pSuite, "abs_test", abs_test) == NULL) ||
-            (CU_add_test(pSuite, "pow_test", pow_test) == NULL) ||
-            (CU_add_test(pSuite, "alloc_fail_test", alloc_fail_test) == NULL) ||
-            (CU_add_test(pSuite, "alloc_success_test", alloc_success_test) == NULL) ||
-            (CU_add_test(pSuite, "alloc_ref_test", alloc_ref_test) == NULL) ||
-            (CU_add_test(pSuite, "dealloc_null_test", dealloc_null_test) == NULL) ||
-            (CU_add_test(pSuite, "get_test", get_test) == NULL) ||
-            (CU_add_test(pSuite, "set_test", set_test) == NULL)) {
+        (CU_add_test(pSuite, "sub_test", sub_test) == NULL) ||
+        (CU_add_test(pSuite, "mul_test", mul_test) == NULL) ||
+        (CU_add_test(pSuite, "neg_test", neg_test) == NULL) ||
+        (CU_add_test(pSuite, "abs_test", abs_test) == NULL) ||
+        (CU_add_test(pSuite, "pow_test", pow_test) == NULL) ||
+        (CU_add_test(pSuite, "alloc_fail_test", alloc_fail_test) == NULL) ||
+        (CU_add_test(pSuite, "alloc_success_test", alloc_success_test) == NULL) ||
+        (CU_add_test(pSuite, "alloc_ref_test", alloc_ref_test) == NULL) ||
+        (CU_add_test(pSuite, "dealloc_null_test", dealloc_null_test) == NULL) ||
+        (CU_add_test(pSuite, "get_test", get_test) == NULL) ||
+        (CU_add_test(pSuite, "set_test", set_test) == NULL)) {
         CU_cleanup_registry();
         return CU_get_error();
     }

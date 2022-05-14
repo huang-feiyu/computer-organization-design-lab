@@ -1,13 +1,14 @@
 #include "matrix.h"
+
+#include <omp.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <omp.h>
 
 // Include SSE intrinsics
 #if defined(_MSC_VER)
 #include <intrin.h>
-#elif defined(__GNUC__) && (defined(__x86_64__) || defined(__i386__))
+#elif defined(__GNUC__) && (defined(__x86_4__) || defined(__i386__))
 #include <immintrin.h>
 #include <x86intrin.h>
 #endif
@@ -24,7 +25,7 @@
  * __m256d _mm256_cmp_pd (__m256d a, __m256d b, const int imm8)
  * __m256d _mm256_and_pd (__m256d a, __m256d b)
  * __m256d _mm256_max_pd (__m256d a, __m256d b)
-*/
+ */
 
 /*
  * Generates a random double between `low` and `high`.
@@ -156,4 +157,3 @@ int neg_matrix(matrix *result, matrix *mat) {
 int abs_matrix(matrix *result, matrix *mat) {
     /* TODO: YOUR CODE HERE */
 }
-
