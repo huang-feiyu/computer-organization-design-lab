@@ -27,5 +27,6 @@
     * [proj1](./projects/proj1): The Game of Life
     * [proj2](./projects/proj2): Classify
     * [proj3](./projects/proj3): CPU
+    * [proj4](./projects/proj4): Numc (skip)
 
 ——有些项目存在 bug，如果我记得的话，我会在某个时候修复。
