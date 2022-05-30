@@ -1,6 +1,6 @@
 # CS61C
 
-> 本课程根据 Slides 与教材学习，没有看教学视频
+> [Learning-Space/Computer-Organization-and-Design](https://github.com/huang-feiyu/Learning-Space/tree/master/Computer-Organization-and-Design)<br/>本课程根据 Slides 与教材学习，没有看教学视频
 
 课程资源：
 
